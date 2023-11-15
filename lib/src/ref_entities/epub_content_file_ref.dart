@@ -26,7 +26,7 @@ abstract class EpubContentFileRef {
 
   @override
   bool operator ==(other) {
-    if (!(other is EpubContentFileRef)) {
+    if (other is! EpubContentFileRef) {
       return false;
     }
 
@@ -56,7 +56,7 @@ abstract class EpubContentFileRef {
     var contentStream = <int>[];
     if (contentFileEntry.content == null) {
       throw Exception(
-          'Incorrect EPUB file: content file \"$FileName\" specified in manifest is not found.');
+          'Incorrect EPUB file: content file "$FileName" specified in manifest is not found.');
     }
     contentStream.addAll(contentFileEntry.content);
     return contentStream;

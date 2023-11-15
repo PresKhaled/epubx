@@ -42,4 +42,3 @@ export 'src/schema/navigation/epub_navigation_head_meta.dart';
 export 'src/schema/navigation/epub_navigation_label.dart';
 export 'src/schema/navigation/epub_navigation_map.dart';
 export 'src/schema/navigation/epub_navigation_point.dart';
-export 'package:image/image.dart' show Image;

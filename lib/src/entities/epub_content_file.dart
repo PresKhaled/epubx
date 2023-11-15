@@ -13,7 +13,7 @@ abstract class EpubContentFile {
 
   @override
   bool operator ==(other) {
-    if (!(other is EpubContentFile)) {
+    if (other is! EpubContentFile) {
       return false;
     }
     return FileName == other.FileName &&

@@ -14,7 +14,7 @@ class EpubSchema {
 
   @override
   bool operator ==(other) {
-    if (!(other is EpubSchema)) {
+    if (other is! EpubSchema) {
       return false;
     }
 

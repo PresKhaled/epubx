@@ -40,7 +40,7 @@ class EpubContentRef {
 
   @override
   bool operator ==(other) {
-    if (!(other is EpubContentRef)) {
+    if (other is! EpubContentRef) {
       return false;
     }
 

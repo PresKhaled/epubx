@@ -19,7 +19,7 @@ class EpubByteContentFile extends EpubContentFile {
 
   @override
   bool operator ==(other) {
-    if (!(other is EpubByteContentFile)) {
+    if (other is! EpubByteContentFile) {
       return false;
     }
     return collections.listsEqual(Content, other.Content) &&

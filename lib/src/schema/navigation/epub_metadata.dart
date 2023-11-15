@@ -9,7 +9,7 @@ class EpubNavigationContent {
 
   @override
   bool operator ==(other) {
-    if (!(other is EpubNavigationContent)) {
+    if (other is! EpubNavigationContent) {
       return false;
     }
     return Id == other.Id && Source == other.Source;

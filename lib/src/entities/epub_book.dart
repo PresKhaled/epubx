@@ -1,4 +1,3 @@
-import 'package:image/image.dart';
 import 'package:quiver/collection.dart' as collections;
 import 'package:quiver/core.dart';
 
@@ -33,7 +32,7 @@ class EpubBook {
 
   @override
   bool operator ==(other) {
-    if (!(other is EpubBook)) {
+    if (other is! EpubBook) {
       return false;
     }
 
@@ -42,8 +41,8 @@ class EpubBook {
         collections.listsEqual(AuthorList, other.AuthorList) &&
         Schema == other.Schema &&
         Content == other.Content &&
-        collections.listsEqual(
-            CoverImage!.getContentStream(), other.CoverImage!.getContentStream()) &&
+        collections.listsEqual(CoverImage!.getContentStream(),
+            other.CoverImage!.getContentStream()) &&
         collections.listsEqual(Chapters, other.Chapters);
   }
 }
