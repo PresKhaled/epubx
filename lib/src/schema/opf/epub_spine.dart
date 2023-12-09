@@ -5,16 +5,14 @@ import 'epub_spine_item_ref.dart';
 
 class EpubSpine {
   String? TableOfContents;
-  List<EpubSpineItemRef>? Items;
-  bool? ltr;
+  List<EpubSpineItemRef> Items;
+  bool ltr;
+
+  EpubSpine({this.TableOfContents, this.ltr = true, required this.Items});
 
   @override
   int get hashCode {
-    var objs = [
-      TableOfContents.hashCode,
-      ltr.hashCode,
-      ...Items!.map((item) => item.hashCode)
-    ];
+    var objs = [TableOfContents.hashCode, ltr.hashCode, ...Items.map((item) => item.hashCode)];
     return hashObjects(objs);
   }
 
@@ -26,7 +24,6 @@ class EpubSpine {
     if (!collections.listsEqual(Items, otherAs.Items)) {
       return false;
     }
-    return ((TableOfContents == otherAs.TableOfContents) &&
-        (ltr == otherAs.ltr));
+    return ((TableOfContents == otherAs.TableOfContents) && (ltr == otherAs.ltr));
   }
 }

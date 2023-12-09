@@ -1,15 +1,27 @@
 import 'package:quiver/core.dart';
 
 class EpubManifestItem {
-  String? Id;
-  String? Href;
-  String? MediaType;
+  String Id;
+  String Href;
+  String MediaType;
   String? MediaOverlay;
   String? RequiredNamespace;
   String? RequiredModules;
   String? Fallback;
   String? FallbackStyle;
   String? Properties;
+
+  EpubManifestItem({
+    required this.Id,
+    required this.Href,
+    required this.MediaType,
+    this.MediaOverlay,
+    this.Fallback,
+    this.RequiredNamespace,
+    this.FallbackStyle,
+    this.Properties,
+    this.RequiredModules,
+  });
 
   @override
   int get hashCode => hashObjects([

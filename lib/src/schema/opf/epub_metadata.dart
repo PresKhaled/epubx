@@ -12,42 +12,42 @@ import 'epub_metadata_right.dart';
 import 'epub_metadata_title.dart';
 
 class EpubMetadata {
-  List<EpubMetadataTitle>? Titles;
-  List<EpubMetadataCreator>? Creators;
-  List<String>? Subjects;
-  List<EpubMetadataDescription>? Descriptions;
-  List<EpubMetadataPublisher>? Publishers;
-  List<EpubMetadataContributor>? Contributors;
-  List<EpubMetadataDate>? Dates;
-  List<String>? Types;
-  List<String>? Formats;
-  List<EpubMetadataIdentifier>? Identifiers;
-  List<String>? Sources;
-  List<String>? Languages;
-  List<String>? Relations;
-  List<String>? Coverages;
-  List<EpubMetadataRight>? Rights;
-  List<EpubMetadataMeta>? MetaItems;
+  List<EpubMetadataTitle> Titles = [];
+  List<EpubMetadataCreator> Creators = [];
+  List<String> Subjects = [];
+  List<EpubMetadataDescription> Descriptions = [];
+  List<EpubMetadataPublisher> Publishers = [];
+  List<EpubMetadataContributor> Contributors = [];
+  List<EpubMetadataDate> Dates = [];
+  List<String> Types = [];
+  List<String> Formats = [];
+  List<EpubMetadataIdentifier> Identifiers = [];
+  List<String> Sources = [];
+  List<String> Languages = [];
+  List<String> Relations = [];
+  List<String> Coverages = [];
+  List<EpubMetadataRight> Rights = [];
+  List<EpubMetadataMeta> MetaItems = [];
 
   @override
   int get hashCode {
     var objects = [
-      ...Titles!.map((title) => title.hashCode),
-      ...Creators!.map((creator) => creator.hashCode),
-      ...Subjects!.map((subject) => subject.hashCode),
-      ...Publishers!.map((publisher) => publisher.hashCode),
-      ...Contributors!.map((contributor) => contributor.hashCode),
-      ...Dates!.map((date) => date.hashCode),
-      ...Types!.map((type) => type.hashCode),
-      ...Formats!.map((format) => format.hashCode),
-      ...Identifiers!.map((identifier) => identifier.hashCode),
-      ...Sources!.map((source) => source.hashCode),
-      ...Languages!.map((language) => language.hashCode),
-      ...Relations!.map((relation) => relation.hashCode),
-      ...Coverages!.map((coverage) => coverage.hashCode),
-      ...Rights!.map((right) => right.hashCode),
-      ...MetaItems!.map((metaItem) => metaItem.hashCode),
-      ...Descriptions!.map((description) => description.hashCode),
+      ...Titles.map((title) => title.hashCode),
+      ...Creators.map((creator) => creator.hashCode),
+      ...Subjects.map((subject) => subject.hashCode),
+      ...Publishers.map((publisher) => publisher.hashCode),
+      ...Contributors.map((contributor) => contributor.hashCode),
+      ...Dates.map((date) => date.hashCode),
+      ...Types.map((type) => type.hashCode),
+      ...Formats.map((format) => format.hashCode),
+      ...Identifiers.map((identifier) => identifier.hashCode),
+      ...Sources.map((source) => source.hashCode),
+      ...Languages.map((language) => language.hashCode),
+      ...Relations.map((relation) => relation.hashCode),
+      ...Coverages.map((coverage) => coverage.hashCode),
+      ...Rights.map((right) => right.hashCode),
+      ...MetaItems.map((metaItem) => metaItem.hashCode),
+      ...Descriptions.map((description) => description.hashCode),
     ];
 
     return hashObjects(objects);

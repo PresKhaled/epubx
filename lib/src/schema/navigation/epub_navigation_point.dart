@@ -8,9 +8,9 @@ class EpubNavigationPoint {
   String? Id;
   String? Class;
   String? PlayOrder;
-  List<EpubNavigationLabel>? NavigationLabels;
+  List<EpubNavigationLabel> NavigationLabels = [];
   EpubNavigationContent? Content;
-  List<EpubNavigationPoint>? ChildNavigationPoints;
+  List<EpubNavigationPoint> ChildNavigationPoints = [];
 
   @override
   int get hashCode {
@@ -19,8 +19,8 @@ class EpubNavigationPoint {
       Class.hashCode,
       PlayOrder.hashCode,
       Content.hashCode,
-      ...NavigationLabels!.map((label) => label.hashCode),
-      ...ChildNavigationPoints!.map((point) => point.hashCode)
+      ...NavigationLabels.map((label) => label.hashCode),
+      ...ChildNavigationPoints.map((point) => point.hashCode)
     ];
     return hashObjects(objects);
   }
@@ -36,13 +36,9 @@ class EpubNavigationPoint {
       return false;
     }
 
-    if (!collections.listsEqual(
-        ChildNavigationPoints, otherAs.ChildNavigationPoints)) return false;
+    if (!collections.listsEqual(ChildNavigationPoints, otherAs.ChildNavigationPoints)) return false;
 
-    return Id == otherAs.Id &&
-        Class == otherAs.Class &&
-        PlayOrder == otherAs.PlayOrder &&
-        Content == otherAs.Content;
+    return Id == otherAs.Id && Class == otherAs.Class && PlayOrder == otherAs.PlayOrder && Content == otherAs.Content;
   }
 
   @override

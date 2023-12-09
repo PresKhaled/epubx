@@ -10,11 +10,13 @@ import 'epub_schema.dart';
 class EpubBook {
   late EpubMetadataTitle MainTitle;
   String? Author;
-  List<String?>? AuthorList;
-  EpubSchema? Schema;
+  List<String?> AuthorList = [];
+  final EpubSchema Schema;
   EpubContent? Content;
   EpubByteContentFileRef? CoverImage;
-  List<EpubChapter>? Chapters;
+  List<EpubChapter> Chapters = [];
+
+  EpubBook({required this.Schema});
 
   @override
   int get hashCode {
@@ -24,8 +26,8 @@ class EpubBook {
       Schema.hashCode,
       Content.hashCode,
       ...CoverImage?.getContentStream().map((byte) => byte.hashCode) ?? [0],
-      ...AuthorList?.map((author) => author.hashCode) ?? [0],
-      ...Chapters?.map((chapter) => chapter.hashCode) ?? [0],
+      ...AuthorList.map((author) => author.hashCode),
+      ...Chapters.map((chapter) => chapter.hashCode),
     ];
     return hashObjects(objects);
   }
@@ -41,8 +43,7 @@ class EpubBook {
         collections.listsEqual(AuthorList, other.AuthorList) &&
         Schema == other.Schema &&
         Content == other.Content &&
-        collections.listsEqual(CoverImage!.getContentStream(),
-            other.CoverImage!.getContentStream()) &&
+        collections.listsEqual(CoverImage!.getContentStream(), other.CoverImage!.getContentStream()) &&
         collections.listsEqual(Chapters, other.Chapters);
   }
 }

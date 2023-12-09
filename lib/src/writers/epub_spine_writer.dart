@@ -5,10 +5,10 @@ class EpubSpineWriter {
   static void writeSpine(XmlBuilder builder, EpubSpine spine) {
     builder.element('spine', attributes: {'toc': spine.TableOfContents!},
         nest: () {
-      for (var spineitem in spine.Items!) {
+      for (var spineitem in spine.Items) {
         builder.element('itemref', attributes: {
-          'idref': spineitem.IdRef!,
-          'linear': spineitem.IsLinear! ? 'yes' : 'no'
+          'idref': spineitem.IdRef,
+          'linear': spineitem.IsLinear ? 'yes' : 'no'
         });
       }
     });

@@ -1,28 +1,25 @@
-import 'dart:async';
 import 'dart:convert' as convert;
+import 'dart:typed_data';
 
 import 'package:archive/archive.dart';
-import 'package:collection/collection.dart' show IterableExtension;
+import 'package:epubx/src/entities/epub_schema.dart';
 import 'package:quiver/core.dart';
 
 import '../entities/epub_content_type.dart';
 import '../utils/zip_path_utils.dart';
-import 'epub_book_ref.dart';
 
 abstract class EpubContentFileRef {
-  late EpubBookRef epubBookRef;
+  final Archive epubArchive;
+  final EpubSchema schema;
+  final String FileName;
+  final EpubContentType ContentType;
+  final String ContentMimeType;
 
-  String? FileName;
-
-  EpubContentType? ContentType;
-  String? ContentMimeType;
-  EpubContentFileRef(EpubBookRef epubBookRef) {
-    this.epubBookRef = epubBookRef;
-  }
+  EpubContentFileRef(this.epubArchive, this.schema,
+      {required this.FileName, required this.ContentType, required this.ContentMimeType});
 
   @override
-  int get hashCode =>
-      hash3(FileName.hashCode, ContentMimeType.hashCode, ContentType.hashCode);
+  int get hashCode => hash3(FileName.hashCode, ContentMimeType.hashCode, ContentType.hashCode);
 
   @override
   bool operator ==(other) {
@@ -30,17 +27,12 @@ abstract class EpubContentFileRef {
       return false;
     }
 
-    return (other.FileName == FileName &&
-        other.ContentMimeType == ContentMimeType &&
-        other.ContentType == ContentType);
+    return (other.FileName == FileName && other.ContentMimeType == ContentMimeType && other.ContentType == ContentType);
   }
 
   ArchiveFile getContentFileEntry() {
-    var contentFilePath = ZipPathUtils.combine(
-        epubBookRef.Schema!.ContentDirectoryPath, FileName);
-    var contentFileEntry = epubBookRef.EpubArchive()!
-        .files
-        .firstWhereOrNull((ArchiveFile x) => x.name == contentFilePath);
+    var contentFilePath = ZipPathUtils.combine(schema.ContentDirectoryPath, FileName);
+    var contentFileEntry = epubArchive.findFile(contentFilePath!);
     if (contentFileEntry == null) {
       return ArchiveFile("stub", 0, '');
       // throw Exception(
@@ -53,23 +45,20 @@ abstract class EpubContentFileRef {
     return openContentStream(getContentFileEntry());
   }
 
-  List<int> openContentStream(ArchiveFile contentFileEntry) {
-    var contentStream = <int>[];
+  Uint8List openContentStream(ArchiveFile contentFileEntry) {
     if (contentFileEntry.content == null) {
-      throw Exception(
-          'Incorrect EPUB file: content file "$FileName" specified in manifest is not found.');
+      throw Exception('Incorrect EPUB file: content file "$FileName" specified in manifest is not found.');
     }
-    contentStream.addAll(contentFileEntry.content);
-    return contentStream;
+    return Uint8List.fromList(contentFileEntry.content);
   }
 
-  Future<List<int>> readContentAsBytes() async {
+  Uint8List readContentAsBytes() {
     var contentFileEntry = getContentFileEntry();
     var content = openContentStream(contentFileEntry);
     return content;
   }
 
-  Future<String> readContentAsText() async {
+  String readContentAsText() {
     var contentStream = getContentStream();
     var result = convert.utf8.decode(contentStream);
     return result;

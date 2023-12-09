@@ -1,30 +1,21 @@
-import 'dart:async';
-
-import 'package:quiver/collection.dart' as collections;
 import 'package:quiver/core.dart';
 
 import 'epub_text_content_file_ref.dart';
 
 class EpubChapterRef {
   EpubTextContentFileRef? epubTextContentFileRef;
+  String ContentFileName;
 
-  String? Title;
-  String? ContentFileName;
-  String? Anchor;
-  List<EpubChapterRef>? SubChapters;
-
-  EpubChapterRef(EpubTextContentFileRef? epubTextContentFileRef) {
-    this.epubTextContentFileRef = epubTextContentFileRef;
-  }
+  EpubChapterRef(
+    this.epubTextContentFileRef, {
+    required this.ContentFileName,
+  });
 
   @override
   int get hashCode {
     var objects = [
-      Title.hashCode,
       ContentFileName.hashCode,
-      Anchor.hashCode,
       epubTextContentFileRef.hashCode,
-      ...SubChapters?.map((subChapter) => subChapter.hashCode) ?? [0],
     ];
     return hashObjects(objects);
   }
@@ -34,19 +25,15 @@ class EpubChapterRef {
     if (other is! EpubChapterRef) {
       return false;
     }
-    return Title == other.Title &&
-        ContentFileName == other.ContentFileName &&
-        Anchor == other.Anchor &&
-        epubTextContentFileRef == other.epubTextContentFileRef &&
-        collections.listsEqual(SubChapters, other.SubChapters);
+    return ContentFileName == other.ContentFileName && epubTextContentFileRef == other.epubTextContentFileRef;
   }
 
-  Future<String> readHtmlContent() async {
+  String readHtmlContent() {
     return epubTextContentFileRef!.readContentAsText();
   }
 
-  @override
-  String toString() {
-    return 'Title: $Title, Subchapter count: ${SubChapters!.length}';
-  }
+  // @override
+  // String toString() {
+  //   return 'Title: $Title, Subchapter count: ${SubChapters.length}';
+  // }
 }

@@ -1,21 +1,16 @@
-import 'package:quiver/collection.dart' as collections;
 import 'package:quiver/core.dart';
 
 class EpubChapter {
-  String? Title;
-  String? ContentFileName;
-  String? Anchor;
-  String? HtmlContent;
-  List<EpubChapter>? SubChapters;
+  String ContentFileName;
+  String HtmlContent;
+
+  EpubChapter({required this.ContentFileName, required this.HtmlContent});
 
   @override
   int get hashCode {
     var objects = [
-      Title.hashCode,
       ContentFileName.hashCode,
-      Anchor.hashCode,
       HtmlContent.hashCode,
-      ...SubChapters?.map((subChapter) => subChapter.hashCode) ?? [0],
     ];
     return hashObjects(objects);
   }
@@ -25,15 +20,11 @@ class EpubChapter {
     if (other is! EpubChapter) {
       return false;
     }
-    return Title == other.Title &&
-        ContentFileName == other.ContentFileName &&
-        Anchor == other.Anchor &&
-        HtmlContent == other.HtmlContent &&
-        collections.listsEqual(SubChapters, other.SubChapters);
+    return ContentFileName == other.ContentFileName && HtmlContent == other.HtmlContent;
   }
 
-  @override
-  String toString() {
-    return 'Title: $Title, Subchapter count: ${SubChapters!.length}';
-  }
+  // @override
+  // String toString() {
+  //   return 'Title: $Title, Subchapter count: ${SubChapters.length}';
+  // }
 }

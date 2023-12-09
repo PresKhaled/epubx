@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:archive/archive.dart';
 import 'dart:convert' as convert;
 import 'package:collection/collection.dart' show IterableExtension;
@@ -30,9 +28,7 @@ class PackageReader {
   static EpubGuide readGuide(XmlElement guideNode) {
     var result = EpubGuide();
     result.Items = <EpubGuideReference>[];
-    guideNode.children
-        .whereType<XmlElement>()
-        .forEach((XmlElement guideReferenceNode) {
+    guideNode.children.whereType<XmlElement>().forEach((XmlElement guideReferenceNode) {
       if (guideReferenceNode.name.local.toLowerCase() == 'reference') {
         var guideReference = EpubGuideReference();
         for (var guideReferenceNodeAttribute in guideReferenceNode.attributes) {
@@ -63,79 +59,59 @@ class PackageReader {
 
   static EpubManifest readManifest(XmlElement manifestNode) {
     var result = EpubManifest();
-    result.Items = <EpubManifestItem>[];
-    manifestNode.children
-        .whereType<XmlElement>()
-        .forEach((XmlElement manifestItemNode) {
-      if (manifestItemNode.name.local.toLowerCase() == 'item') {
-        var manifestItem = EpubManifestItem();
-        for (var manifestItemNodeAttribute in manifestItemNode.attributes) {
-          var attributeValue = manifestItemNodeAttribute.value;
-          switch (manifestItemNodeAttribute.name.local.toLowerCase()) {
-            case 'id':
-              manifestItem.Id = attributeValue;
-              break;
-            case 'href':
-              manifestItem.Href = attributeValue;
-              break;
-            case 'media-type':
-              manifestItem.MediaType = attributeValue;
-              break;
-            case 'media-overlay':
-              manifestItem.MediaOverlay = attributeValue;
-              break;
-            case 'required-namespace':
-              manifestItem.RequiredNamespace = attributeValue;
-              break;
-            case 'required-modules':
-              manifestItem.RequiredModules = attributeValue;
-              break;
-            case 'fallback':
-              manifestItem.Fallback = attributeValue;
-              break;
-            case 'fallback-style':
-              manifestItem.FallbackStyle = attributeValue;
-              break;
-            case 'properties':
-              manifestItem.Properties = attributeValue;
-              break;
-          }
+    for (final manifestItemNode in manifestNode.children.whereType<XmlElement>()) {
+      late String id, href, mediaType;
+      String? mediaOverlay, requiredNamespace, requiredModules, fallback, fallbackStyle, properties;
+      for (var manifestItemNodeAttribute in manifestItemNode.attributes) {
+        var attributeValue = manifestItemNodeAttribute.value;
+        switch (manifestItemNodeAttribute.name.local.toLowerCase()) {
+          case 'id':
+            id = attributeValue;
+          case 'href':
+            href = attributeValue;
+          case 'media-type':
+            mediaType = attributeValue;
+          case 'media-overlay':
+            mediaOverlay = attributeValue;
+          case 'required-namespace':
+            requiredNamespace = attributeValue;
+          case 'required-modules':
+            requiredModules = attributeValue;
+          case 'fallback':
+            fallback = attributeValue;
+          case 'fallback-style':
+            fallbackStyle = attributeValue;
+          case 'properties':
+            properties = attributeValue;
         }
-
-        if (manifestItem.Id == null || manifestItem.Id!.isEmpty) {
-          throw Exception('Incorrect EPUB manifest: item ID is missing');
-        }
-        if (manifestItem.Href == null || manifestItem.Href!.isEmpty) {
-          throw Exception('Incorrect EPUB manifest: item href is missing');
-        }
-        if (manifestItem.MediaType == null || manifestItem.MediaType!.isEmpty) {
-          throw Exception(
-              'Incorrect EPUB manifest: item media type is missing');
-        }
-        result.Items!.add(manifestItem);
       }
-    });
+      var manifestItem = EpubManifestItem(
+        Id: id,
+        Href: href,
+        MediaType: mediaType,
+        MediaOverlay: mediaOverlay,
+        RequiredNamespace: requiredNamespace,
+        RequiredModules: requiredModules,
+        Fallback: fallback,
+        FallbackStyle: fallbackStyle,
+        Properties: properties,
+      );
+      if (manifestItem.Id.isEmpty) {
+        throw Exception('Incorrect EPUB manifest: item ID is missing');
+      }
+      if (manifestItem.Href.isEmpty) {
+        throw Exception('Incorrect EPUB manifest: item href is missing');
+      }
+      if (manifestItem.MediaType.isEmpty) {
+        throw Exception('Incorrect EPUB manifest: item media type is missing');
+      }
+      result.Items.add(manifestItem);
+    }
     return result;
   }
 
-  static EpubMetadata readMetadata(
-      XmlElement metadataNode, EpubVersion? epubVersion) {
+  static EpubMetadata readMetadata(XmlElement metadataNode, EpubVersion? epubVersion) {
     var result = EpubMetadata();
-    result.Titles = <EpubMetadataTitle>[];
-    result.Descriptions = <EpubMetadataDescription>[];
-    result.Creators = <EpubMetadataCreator>[];
-    result.Subjects = <String>[];
-    result.Publishers = <EpubMetadataPublisher>[];
-    result.Contributors = <EpubMetadataContributor>[];
-    result.Dates = <EpubMetadataDate>[];
-    result.Types = <String>[];
-    result.Formats = <String>[];
-    result.Identifiers = <EpubMetadataIdentifier>[];
-    result.Sources = <String>[];
-    result.Languages = <String>[];
-    result.Relations = <String>[];
-    result.Coverages = <String>[];
-    result.Rights = <EpubMetadataRight>[];
 
     result.MetaItems = metadataNode.children.whereType<XmlElement>().where(
       (XmlElement metadataItemNode) {
@@ -156,13 +132,11 @@ class PackageReader {
       },
     ).toList();
 
-    metadataNode.children
-        .whereType<XmlElement>()
-        .forEach((XmlElement metadataItemNode) {
+    for (var metadataItemNode in metadataNode.children.whereType<XmlElement>()) {
       var innerText = metadataItemNode.innerText;
       switch (metadataItemNode.name.local.toLowerCase()) {
         case 'title':
-          result.Titles!.add(
+          result.Titles.add(
             EpubMetadataTitle(
               Id: metadataItemNode.getAttribute('id'),
               Title: innerText,
@@ -185,13 +159,11 @@ class PackageReader {
           }
 
           if (epubVersion == EpubVersion.Epub3) {
-            final Iterable<EpubMetadataMeta> associatedMetaItems =
-                result.MetaItems!.where(
+            final Iterable<EpubMetadataMeta> associatedMetaItems = result.MetaItems.where(
               (EpubMetadataMeta meta) {
                 meta.Refines = meta.Refines?.trim();
 
-                if (creatorOrContributor.Id != null &&
-                    (meta.Refines == '#${creatorOrContributor.Id}')) {
+                if (creatorOrContributor.Id != null && (meta.Refines == '#${creatorOrContributor.Id}')) {
                   return true;
                 }
 
@@ -217,14 +189,12 @@ class PackageReader {
             )
                 .map(
               (EpubMetadataMeta meta) {
-                final EpubLanguageRelatedAttributes languageRelatedAttributes =
-                    EpubLanguageRelatedAttributes()
-                      ..Lang = meta.Attributes?['lang']
-                      ..Dir = meta.Attributes?['dir'];
-                final EpubMetadataCreatorAlternateScript alternateScript =
-                    EpubMetadataCreatorAlternateScript()
-                      ..name = meta.TextContent // Name in another language.
-                      ..LanguageRelatedAttributes = languageRelatedAttributes;
+                final EpubLanguageRelatedAttributes languageRelatedAttributes = EpubLanguageRelatedAttributes()
+                  ..Lang = meta.Attributes?['lang']
+                  ..Dir = meta.Attributes?['dir'];
+                final EpubMetadataCreatorAlternateScript alternateScript = EpubMetadataCreatorAlternateScript()
+                  ..name = meta.TextContent // Name in another language.
+                  ..LanguageRelatedAttributes = languageRelatedAttributes;
 
                 return alternateScript;
               },
@@ -232,24 +202,23 @@ class PackageReader {
 
             creatorOrContributor.DisplaySeq = int.tryParse(associatedMetaItems
                     .firstWhereOrNull(
-                      (EpubMetadataMeta meta) =>
-                          (meta.Property == 'display-seq'),
+                      (EpubMetadataMeta meta) => (meta.Property == 'display-seq'),
                     )
                     ?.TextContent ??
                 '');
           }
 
           if (tagName == 'creator') {
-            result.Creators!.add(creatorOrContributor);
+            result.Creators.add(creatorOrContributor);
           } else {
-            result.Contributors!.add(creatorOrContributor);
+            result.Contributors.add(creatorOrContributor);
           }
           break;
         case 'subject':
-          result.Subjects!.add(innerText);
+          result.Subjects.add(innerText);
           break;
         case 'description':
-          result.Descriptions!.add(
+          result.Descriptions.add(
             EpubMetadataDescription(
               Id: metadataItemNode.getAttribute('id'),
               Description: innerText,
@@ -261,7 +230,7 @@ class PackageReader {
           );
           break;
         case 'publisher':
-          result.Publishers!.add(
+          result.Publishers.add(
             EpubMetadataPublisher(
               Id: metadataItemNode.getAttribute('id'),
               Publisher: innerText,
@@ -275,32 +244,32 @@ class PackageReader {
 
         case 'date':
           var date = readMetadataDate(metadataItemNode);
-          result.Dates!.add(date);
+          result.Dates.add(date);
           break;
         case 'type':
-          result.Types!.add(innerText);
+          result.Types.add(innerText);
           break;
         case 'format':
-          result.Formats!.add(innerText);
+          result.Formats.add(innerText);
           break;
         case 'identifier':
           var identifier = readMetadataIdentifier(metadataItemNode);
-          result.Identifiers!.add(identifier);
+          result.Identifiers.add(identifier);
           break;
         case 'source':
-          result.Sources!.add(innerText);
+          result.Sources.add(innerText);
           break;
         case 'language':
-          result.Languages!.add(innerText);
+          result.Languages.add(innerText);
           break;
         case 'relation':
-          result.Relations!.add(innerText);
+          result.Relations.add(innerText);
           break;
         case 'coverage':
-          result.Coverages!.add(innerText);
+          result.Coverages.add(innerText);
           break;
         case 'rights':
-          result.Rights!.add(
+          result.Rights.add(
             EpubMetadataRight(
               Id: metadataItemNode.getAttribute('id'),
               Right: innerText,
@@ -321,16 +290,14 @@ class PackageReader {
           }
           break;*/
       }
-    });
+    }
     return result;
   }
 
-  static EpubMetadataContributor readMetadataContributor(
-      XmlElement metadataContributorNode) {
+  static EpubMetadataContributor readMetadataContributor(XmlElement metadataContributorNode) {
     final languageRelatedAttributes = EpubLanguageRelatedAttributes();
     var result = EpubMetadataContributor();
-    for (var metadataContributorNodeAttribute
-        in metadataContributorNode.attributes) {
+    for (var metadataContributorNodeAttribute in metadataContributorNode.attributes) {
       var attributeValue = metadataContributorNodeAttribute.value;
       switch (metadataContributorNodeAttribute.name.local.toLowerCase()) {
         case 'id':
@@ -348,8 +315,7 @@ class PackageReader {
       }
     }
 
-    if (languageRelatedAttributes.Lang != null ||
-        languageRelatedAttributes.Dir != null) {
+    if (languageRelatedAttributes.Lang != null || languageRelatedAttributes.Dir != null) {
       result.LanguageRelatedAttributes = languageRelatedAttributes;
     }
 
@@ -357,8 +323,7 @@ class PackageReader {
     return result;
   }
 
-  static EpubMetadataCreator readMetadataCreator(
-      XmlElement metadataCreatorNode) {
+  static EpubMetadataCreator readMetadataCreator(XmlElement metadataCreatorNode) {
     final languageRelatedAttributes = EpubLanguageRelatedAttributes();
     var result = EpubMetadataCreator();
     for (var metadataCreatorNodeAttribute in metadataCreatorNode.attributes) {
@@ -379,8 +344,7 @@ class PackageReader {
       }
     }
 
-    if (languageRelatedAttributes.Lang != null ||
-        languageRelatedAttributes.Dir != null) {
+    if (languageRelatedAttributes.Lang != null || languageRelatedAttributes.Dir != null) {
       result.LanguageRelatedAttributes = languageRelatedAttributes;
     }
 
@@ -391,8 +355,7 @@ class PackageReader {
 
   static EpubMetadataDate readMetadataDate(XmlElement metadataDateNode) {
     var result = EpubMetadataDate();
-    var eventAttribute = metadataDateNode.getAttribute('event',
-        namespace: metadataDateNode.name.namespaceUri);
+    var eventAttribute = metadataDateNode.getAttribute('event', namespace: metadataDateNode.name.namespaceUri);
     if (eventAttribute != null && eventAttribute.isNotEmpty) {
       result.Event = eventAttribute;
     }
@@ -400,11 +363,9 @@ class PackageReader {
     return result;
   }
 
-  static EpubMetadataIdentifier readMetadataIdentifier(
-      XmlElement metadataIdentifierNode) {
+  static EpubMetadataIdentifier readMetadataIdentifier(XmlElement metadataIdentifierNode) {
     var result = EpubMetadataIdentifier();
-    for (var metadataIdentifierNodeAttribute
-        in metadataIdentifierNode.attributes) {
+    for (var metadataIdentifierNodeAttribute in metadataIdentifierNode.attributes) {
       var attributeValue = metadataIdentifierNodeAttribute.value;
       switch (metadataIdentifierNodeAttribute.name.local.toLowerCase()) {
         case 'id':
@@ -483,96 +444,78 @@ class PackageReader {
     return result;
   }
 
-  static Future<EpubPackage> readPackage(
-      Archive epubArchive, String rootFilePath) async {
-    var rootFileEntry = epubArchive.files.firstWhereOrNull(
-        (ArchiveFile testFile) => testFile.name == rootFilePath);
+  static EpubPackage readPackage(Archive epubArchive, String rootFilePath) {
+    var rootFileEntry = epubArchive.findFile(rootFilePath);
     if (rootFileEntry == null) {
       throw Exception('EPUB parsing error: root file not found in archive.');
     }
-    var containerDocument =
-        XmlDocument.parse(convert.utf8.decode(rootFileEntry.content));
+    var containerDocument = XmlDocument.parse(convert.utf8.decode(rootFileEntry.content));
     var opfNamespace = 'http://www.idpf.org/2007/opf';
-    var packageNode = containerDocument
-        .findElements('package', namespace: opfNamespace)
-        .firstWhere((XmlElement? elem) => elem != null);
-    var result = EpubPackage();
+    var packageNode = containerDocument.getElement('package', namespace: opfNamespace);
+    if (packageNode == null) {
+      throw Exception('EPUB parsing error: Package node not found.');
+    }
+    //.firstWhere((XmlElement? elem) => elem != null);
     var epubVersionValue = packageNode.getAttribute('version');
+    late EpubVersion version;
     if (epubVersionValue == '2.0') {
-      result.Version = EpubVersion.Epub2;
+      version = EpubVersion.Epub2;
     } else if (epubVersionValue == '3.0') {
-      result.Version = EpubVersion.Epub3;
+      version = EpubVersion.Epub3;
     } else {
       throw Exception('Unsupported EPUB version: $epubVersionValue.');
     }
 
-    result.LanguageRelatedAttributes = EpubLanguageRelatedAttributes(
+    var languageRelatedAttributes = EpubLanguageRelatedAttributes(
       Lang: packageNode.getAttribute('lang'),
       Dir: packageNode.getAttribute('dir'),
     );
 
-    var metadataNode = packageNode
-        .findElements('metadata', namespace: opfNamespace)
-        .cast<XmlElement?>()
-        .firstWhere((XmlElement? elem) => elem != null);
+    var metadataNode = packageNode.getElement('metadata', namespace: opfNamespace);
     if (metadataNode == null) {
       throw Exception('EPUB parsing error: metadata not found in the package.');
     }
-    var metadata = readMetadata(metadataNode, result.Version);
-    result.Metadata = metadata;
-    var manifestNode = packageNode
-        .findElements('manifest', namespace: opfNamespace)
-        .cast<XmlElement?>()
-        .firstWhere((XmlElement? elem) => elem != null);
+    var metadata = readMetadata(metadataNode, version);
+    var manifestNode = packageNode.getElement('manifest', namespace: opfNamespace);
+
     if (manifestNode == null) {
       throw Exception('EPUB parsing error: manifest not found in the package.');
     }
     var manifest = readManifest(manifestNode);
-    result.Manifest = manifest;
 
-    var spineNode = packageNode
-        .findElements('spine', namespace: opfNamespace)
-        .cast<XmlElement?>()
-        .firstWhere((XmlElement? elem) => elem != null);
+    var spineNode = packageNode.getElement('spine', namespace: opfNamespace);
+
     if (spineNode == null) {
       throw Exception('EPUB parsing error: spine not found in the package.');
     }
     var spine = readSpine(spineNode);
-    result.Spine = spine;
-    var guideNode = packageNode
-        .findElements('guide', namespace: opfNamespace)
-        .firstWhereOrNull((XmlElement? elem) => elem != null);
-    if (guideNode != null) {
-      var guide = readGuide(guideNode);
-      result.Guide = guide;
-    }
-    return result;
+    var guideNode = packageNode.getElement('guide', namespace: opfNamespace);
+    return EpubPackage(
+      Metadata: metadata,
+      Manifest: manifest,
+      Spine: spine,
+      Version: version,
+      LanguageRelatedAttributes: languageRelatedAttributes,
+      Guide: guideNode == null ? null : readGuide(guideNode),
+    );
   }
 
   static EpubSpine readSpine(XmlElement spineNode) {
-    var result = EpubSpine();
-    result.Items = <EpubSpineItemRef>[];
-    var tocAttribute = spineNode.getAttribute('toc');
-    result.TableOfContents = tocAttribute;
     var pageProgression = spineNode.getAttribute('page-progression-direction');
-    result.ltr =
-        ((pageProgression == null) || pageProgression.toLowerCase() == 'ltr');
-    spineNode.children
-        .whereType<XmlElement>()
-        .forEach((XmlElement spineItemNode) {
+    var ltr = ((pageProgression == null) || pageProgression.toLowerCase() == 'ltr');
+    final items = <EpubSpineItemRef>[];
+    for (var spineItemNode in spineNode.children.whereType<XmlElement>()) {
       if (spineItemNode.name.local.toLowerCase() == 'itemref') {
-        var spineItemRef = EpubSpineItemRef();
         var idRefAttribute = spineItemNode.getAttribute('idref');
         if (idRefAttribute == null || idRefAttribute.isEmpty) {
           throw Exception('Incorrect EPUB spine: item ID ref is missing');
         }
-        spineItemRef.IdRef = idRefAttribute;
         var linearAttribute = spineItemNode.getAttribute('linear');
-        spineItemRef.IsLinear =
-            linearAttribute == null || (linearAttribute.toLowerCase() == 'no');
-        result.Items!.add(spineItemRef);
+        var isLinear = linearAttribute == null || (linearAttribute.toLowerCase() == 'no');
+        var spineItemRef = EpubSpineItemRef(IdRef: idRefAttribute, IsLinear: isLinear);
+        items.add(spineItemRef);
       }
-    });
-    return result;
+    }
+    return EpubSpine(TableOfContents: spineNode.getAttribute('toc'), ltr: ltr, Items: items);
   }
 }

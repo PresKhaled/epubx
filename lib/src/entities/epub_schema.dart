@@ -4,13 +4,14 @@ import '../schema/navigation/epub_navigation.dart';
 import '../schema/opf/epub_package.dart';
 
 class EpubSchema {
-  EpubPackage? Package;
-  EpubNavigation? Navigation;
-  String? ContentDirectoryPath;
+  final EpubPackage Package;
+  final EpubNavigation Navigation;
+  final String ContentDirectoryPath;
+
+  EpubSchema({required this.Package, required this.Navigation, required this.ContentDirectoryPath});
 
   @override
-  int get hashCode => hash3(
-      Package.hashCode, Navigation.hashCode, ContentDirectoryPath.hashCode);
+  int get hashCode => hash3(Package.hashCode, Navigation.hashCode, ContentDirectoryPath.hashCode);
 
   @override
   bool operator ==(other) {

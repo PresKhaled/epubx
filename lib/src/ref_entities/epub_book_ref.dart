@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:archive/archive.dart';
 import 'package:quiver/collection.dart' as collections;
 import 'package:quiver/core.dart';
@@ -13,17 +11,22 @@ import 'epub_chapter_ref.dart';
 import 'epub_content_ref.dart';
 
 class EpubBookRef {
-  Archive? _epubArchive;
+  final Archive epubArchive;
 
   /// Main title.
-  EpubMetadataTitle? Title;
-  String? Author;
-  List<String?>? AuthorList;
-  EpubSchema? Schema;
-  EpubContentRef? Content;
-  EpubBookRef(Archive epubArchive) {
-    _epubArchive = epubArchive;
-  }
+  EpubMetadataTitle Title;
+  String Author;
+  List<String?> AuthorList;
+  EpubSchema Schema;
+  EpubContentRef Content;
+  EpubBookRef(
+    this.epubArchive, {
+    required this.Schema,
+    required this.Title,
+    required this.AuthorList,
+    required this.Author,
+    required this.Content,
+  });
 
   @override
   int get hashCode {
@@ -32,7 +35,7 @@ class EpubBookRef {
       Author.hashCode,
       Schema.hashCode,
       Content.hashCode,
-      ...AuthorList?.map((author) => author.hashCode) ?? [0],
+      ...AuthorList.map((author) => author.hashCode),
     ];
     return hashObjects(objects);
   }
@@ -50,15 +53,11 @@ class EpubBookRef {
         collections.listsEqual(AuthorList, other.AuthorList);
   }
 
-  Archive? EpubArchive() {
-    return _epubArchive;
-  }
-
-  Future<List<EpubChapterRef>> getChapters() async {
+  List<EpubChapterRef> getChapters() {
     return ChapterReader.getChapters(this);
   }
 
-  Future<EpubByteContentFileRef?> readCover() async {
-    return await BookCoverReader.readBookCover(this);
+  EpubByteContentFileRef? readCover() {
+    return BookCoverReader.readBookCover(this);
   }
 }

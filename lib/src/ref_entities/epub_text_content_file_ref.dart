@@ -1,12 +1,10 @@
-import 'dart:async';
-
-import 'epub_book_ref.dart';
 import 'epub_content_file_ref.dart';
 
 class EpubTextContentFileRef extends EpubContentFileRef {
-  EpubTextContentFileRef(EpubBookRef epubBookRef) : super(epubBookRef);
+  EpubTextContentFileRef(super.epubArchive, super.schema,
+      {required super.ContentMimeType, required super.ContentType, required super.FileName});
 
-  Future<String> ReadContentAsync() async {
+  String ReadContentAsync() {
     return readContentAsText();
   }
 }
