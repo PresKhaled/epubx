@@ -15,7 +15,6 @@ import 'ref_entities/epub_chapter_ref.dart';
 import 'ref_entities/epub_content_file_ref.dart';
 import 'ref_entities/epub_content_ref.dart';
 import 'ref_entities/epub_text_content_file_ref.dart';
-import 'schema/opf/epub_metadata_creator.dart';
 
 /// A class that provides the primary interface to read Epub files.
 ///
@@ -60,7 +59,8 @@ class EpubReader {
     var epubArchive = ZipDecoder().decodeBytes(loadedBytes);
     var schema = SchemaReader.readSchema(epubArchive);
 
-    var authorList = schema.Package.Metadata.Creators.map((EpubMetadataCreator creator) => creator.Creator).toList();
+    // could also use List.generate but this feels better
+    var authorList = [for (var creator in schema.Package.Metadata.Creators) creator.Creator!];
 
     ContentReader.parseContentMap(schema, epubArchive);
     return EpubBookRef(
@@ -78,13 +78,15 @@ class EpubReader {
     final List<int> loadedBytes = (bytes is Future) ? await bytes : bytes;
 
     var epubBookRef = await openBook(loadedBytes);
-    var result = EpubBook(Schema: epubBookRef.Schema);
-    result.MainTitle = epubBookRef.Title;
-    result.AuthorList = (epubBookRef.AuthorList);
+    var result = EpubBook(
+      Schema: epubBookRef.Schema,
+      MainTitle: epubBookRef.Title,
+      Content: readContent(epubBookRef.Content),
+    );
+    result.AuthorList = epubBookRef.AuthorList;
     result.Author = epubBookRef.Author;
-    result.Content = readContent(epubBookRef.Content);
-    result.CoverImage = epubBookRef.readCover();
-    var chapterRefs = epubBookRef.getChapters();
+    result.CoverImage = epubBookRef.readCover;
+    var chapterRefs = epubBookRef.getChapters;
     result.Chapters = readChapters(chapterRefs);
 
     return result;

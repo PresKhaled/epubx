@@ -32,7 +32,7 @@ abstract class EpubContentFileRef {
 
   ArchiveFile getContentFileEntry() {
     var contentFilePath = ZipPathUtils.combine(schema.ContentDirectoryPath, FileName);
-    var contentFileEntry = epubArchive.findFile(contentFilePath!);
+    var contentFileEntry = epubArchive.findFile(contentFilePath);
     if (contentFileEntry == null) {
       return ArchiveFile("stub", 0, '');
       // throw Exception(

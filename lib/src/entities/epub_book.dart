@@ -3,20 +3,36 @@ import 'package:quiver/core.dart';
 
 import '../../epubx.dart' show EpubMetadataTitle;
 import '../ref_entities/epub_byte_content_file_ref.dart';
+import '../schema/navigation/epub_navigation_map.dart';
+import '../schema/opf/epub_manifest.dart';
+import '../schema/opf/epub_metadata.dart';
+import '../schema/opf/epub_spine.dart';
+import 'epub_byte_content_file.dart';
 import 'epub_chapter.dart';
 import 'epub_content.dart';
 import 'epub_schema.dart';
+import 'epub_text_content_file.dart';
 
 class EpubBook {
-  late EpubMetadataTitle MainTitle;
+  EpubMetadataTitle MainTitle;
   String? Author;
-  List<String?> AuthorList = [];
+  List<String> AuthorList = [];
   final EpubSchema Schema;
-  EpubContent? Content;
+  EpubContent Content;
   EpubByteContentFileRef? CoverImage;
   List<EpubChapter> Chapters = [];
 
-  EpubBook({required this.Schema});
+  EpubBook({required this.Schema, required this.MainTitle, required this.Content});
+
+  String get title => MainTitle.Title;
+  EpubMetadata get metadata => Schema.Package.Metadata;
+  EpubManifest get manifest => Schema.Package.Manifest;
+  EpubSpine get spine => Schema.Package.Spine;
+  EpubNavigationMap? get navMap => Schema.Navigation.NavMap;
+  Map<String, EpubTextContentFile> get html => Content.Html;
+  Map<String, EpubByteContentFile> get images => Content.Images;
+  Map<String, EpubTextContentFile> get css => Content.Css;
+  Map<String, EpubByteContentFile> get fonts => Content.Fonts;
 
   @override
   int get hashCode {

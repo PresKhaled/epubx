@@ -1,14 +1,19 @@
-import 'package:archive/archive.dart';
+import 'package:archive/archive_io.dart';
 import 'package:quiver/collection.dart' as collections;
 import 'package:quiver/core.dart';
 
 import '../entities/epub_schema.dart';
 import '../readers/book_cover_reader.dart';
 import '../readers/chapter_reader.dart';
+import '../schema/navigation/epub_navigation_map.dart';
+import '../schema/opf/epub_manifest.dart';
+import '../schema/opf/epub_metadata.dart';
 import '../schema/opf/epub_metadata_title.dart';
+import '../schema/opf/epub_spine.dart';
 import 'epub_byte_content_file_ref.dart';
 import 'epub_chapter_ref.dart';
 import 'epub_content_ref.dart';
+import 'epub_text_content_file_ref.dart';
 
 class EpubBookRef {
   final Archive epubArchive;
@@ -16,7 +21,7 @@ class EpubBookRef {
   /// Main title.
   EpubMetadataTitle Title;
   String Author;
-  List<String?> AuthorList;
+  List<String> AuthorList;
   EpubSchema Schema;
   EpubContentRef Content;
   EpubBookRef(
@@ -27,6 +32,16 @@ class EpubBookRef {
     required this.Author,
     required this.Content,
   });
+
+  String get title => Title.Title;
+  EpubMetadata get metadata => Schema.Package.Metadata;
+  EpubManifest get manifest => Schema.Package.Manifest;
+  EpubSpine get spine => Schema.Package.Spine;
+  EpubNavigationMap? get navMap => Schema.Navigation.NavMap;
+  Map<String, EpubTextContentFileRef> get html => Content.Html;
+  Map<String, EpubByteContentFileRef> get images => Content.Images;
+  Map<String, EpubTextContentFileRef> get css => Content.Css;
+  Map<String, EpubByteContentFileRef> get fonts => Content.Fonts;
 
   @override
   int get hashCode {
@@ -53,11 +68,11 @@ class EpubBookRef {
         collections.listsEqual(AuthorList, other.AuthorList);
   }
 
-  List<EpubChapterRef> getChapters() {
-    return ChapterReader.getChapters(this);
+  void extractEpub(String path) {
+    extractArchiveToDisk(epubArchive, path);
   }
 
-  EpubByteContentFileRef? readCover() {
-    return BookCoverReader.readBookCover(this);
-  }
+  List<EpubChapterRef> get getChapters => ChapterReader.getChapters(this);
+
+  EpubByteContentFileRef? get readCover => BookCoverReader.readBookCover(this);
 }

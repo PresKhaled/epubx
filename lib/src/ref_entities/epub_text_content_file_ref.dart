@@ -4,7 +4,7 @@ class EpubTextContentFileRef extends EpubContentFileRef {
   EpubTextContentFileRef(super.epubArchive, super.schema,
       {required super.ContentMimeType, required super.ContentType, required super.FileName});
 
-  String ReadContentAsync() {
+  String ReadContent() {
     return readContentAsText();
   }
 }

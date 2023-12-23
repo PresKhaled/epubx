@@ -113,26 +113,11 @@ class PackageReader {
   static EpubMetadata readMetadata(XmlElement metadataNode, EpubVersion? epubVersion) {
     var result = EpubMetadata();
 
-    result.MetaItems = metadataNode.children.whereType<XmlElement>().where(
-      (XmlElement metadataItemNode) {
-        return (metadataItemNode.name.local.toLowerCase() == 'meta');
-      },
-    ).map(
-      (XmlElement metadataMetaNode) {
-        return readMetadataMeta(metadataMetaNode);
+    for (var metadataMetaNode in metadataNode.findAllElements('meta')) {
+      result.MetaItems.add(readMetadataMeta(metadataMetaNode));
+    }
 
-        /*switch (epubVersion) {
-          case EpubVersion.Epub3:
-            return readMetadataMeta(metadataMetaNode);
-
-          case EpubVersion.Epub2:
-          default:
-            return readMetadataMetaVersion2(metadataMetaNode);
-        }*/
-      },
-    ).toList();
-
-    for (var metadataItemNode in metadataNode.children.whereType<XmlElement>()) {
+    for (var metadataItemNode in metadataNode.childElements) {
       var innerText = metadataItemNode.innerText;
       switch (metadataItemNode.name.local.toLowerCase()) {
         case 'title':
@@ -159,17 +144,10 @@ class PackageReader {
           }
 
           if (epubVersion == EpubVersion.Epub3) {
-            final Iterable<EpubMetadataMeta> associatedMetaItems = result.MetaItems.where(
-              (EpubMetadataMeta meta) {
-                meta.Refines = meta.Refines?.trim();
-
-                if (creatorOrContributor.Id != null && (meta.Refines == '#${creatorOrContributor.Id}')) {
-                  return true;
-                }
-
-                return false;
-              },
-            );
+            final List<EpubMetadataMeta> associatedMetaItems = [
+              for (var meta in result.MetaItems)
+                if (creatorOrContributor.Id != null && meta.Refines == '#${creatorOrContributor.Id}') meta,
+            ];
 
             creatorOrContributor.Role = associatedMetaItems
                 .firstWhereOrNull(
@@ -420,7 +398,7 @@ class PackageReader {
           result.Content = attributeValue;
           break;
         case 'refines':
-          result.Refines = attributeValue;
+          result.Refines = attributeValue.trim();
           break;
         case 'property':
           result.Property = attributeValue;
