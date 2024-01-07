@@ -8,8 +8,8 @@ import 'root_file_path_reader.dart';
 
 class SchemaReader {
   static EpubSchema readSchema(Archive epubArchive) {
-    var rootFilePath = RootFilePathReader.getRootFilePath(epubArchive)!;
-    var contentDirectoryPath = p.dirname(rootFilePath);
+    var rootFilePath = RootFilePathReader.getRootFilePath(epubArchive);
+    var contentDirectoryPath = '${p.dirname(rootFilePath)}/'.replaceFirst('./', '');
     var package = PackageReader.readPackage(epubArchive, rootFilePath);
     var navigation = NavigationReader.readNavigation(epubArchive, contentDirectoryPath, package);
     return EpubSchema(ContentDirectoryPath: contentDirectoryPath, Package: package, Navigation: navigation);

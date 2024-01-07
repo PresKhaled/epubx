@@ -23,8 +23,8 @@ class EpubChapter {
     return ContentFileName == other.ContentFileName && HtmlContent == other.HtmlContent;
   }
 
-  // @override
-  // String toString() {
-  //   return 'Title: $Title, Subchapter count: ${SubChapters.length}';
-  // }
+  @override
+  String toString() {
+    return 'FileName: $ContentFileName';
+  }
 }

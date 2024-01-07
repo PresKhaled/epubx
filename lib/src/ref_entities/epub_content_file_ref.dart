@@ -6,7 +6,6 @@ import 'package:epubx/src/entities/epub_schema.dart';
 import 'package:quiver/core.dart';
 
 import '../entities/epub_content_type.dart';
-import '../utils/zip_path_utils.dart';
 
 abstract class EpubContentFileRef {
   final Archive epubArchive;
@@ -31,12 +30,10 @@ abstract class EpubContentFileRef {
   }
 
   ArchiveFile getContentFileEntry() {
-    var contentFilePath = ZipPathUtils.combine(schema.ContentDirectoryPath, FileName);
-    var contentFileEntry = epubArchive.findFile(contentFilePath);
+    var contentFileEntry = epubArchive.findFile('${schema.ContentDirectoryPath}$FileName');
     if (contentFileEntry == null) {
-      return ArchiveFile("stub", 0, '');
-      // throw Exception(
-      //     'EPUB parsing error: file $contentFilePath not found in archive.');
+      //return ArchiveFile("stub", 0, '');
+      throw Exception('EPUB parsing error: file $FileName not found in archive.');
     }
     return contentFileEntry;
   }

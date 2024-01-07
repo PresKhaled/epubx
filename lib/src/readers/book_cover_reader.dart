@@ -14,7 +14,7 @@ class BookCoverReader {
     if (manifest.Items.isNotEmpty) {
       var coverImageItem = manifest.Items.firstWhereOrNull(
         (EpubManifestItem epubManifestItem) {
-          return (epubManifestItem.Properties == 'cover-image');
+          return (epubManifestItem.Properties?.toLowerCase() == 'cover-image');
         },
       );
 
@@ -48,13 +48,10 @@ class BookCoverReader {
       throw Exception('Incorrect EPUB manifest: item with ID = "${coverMetaItem.Content}" is missing.');
     }
 
-    // EpubByteContentFileRef? coverImageContentFileRef;
     if (!bookRef.Content.Images.containsKey(coverManifestItem.Href)) {
       throw Exception('Incorrect EPUB manifest: item with href = "${coverManifestItem.Href}" is missing.');
     }
 
-    EpubByteContentFileRef? coverImageContentFileRef = bookRef.Content.Images[coverManifestItem.Href];
-
-    return coverImageContentFileRef;
+    return bookRef.Content.Images[coverManifestItem.Href];
   }
 }

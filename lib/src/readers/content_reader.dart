@@ -17,7 +17,6 @@ class ContentReader {
       var contentType = getContentTypeByContentMimeType(contentMimeType);
       switch (contentType) {
         case EpubContentType.OEB1_DOCUMENT:
-        case EpubContentType.OEB1_CSS:
         case EpubContentType.XML:
         case EpubContentType.DTBOOK:
         case EpubContentType.DTBOOK_NCX:
@@ -31,6 +30,7 @@ class ContentReader {
           );
           result.Html[fileId] = epubTextContentFile;
           result.AllFiles[fileId] = epubTextContentFile;
+        case EpubContentType.OEB1_CSS:
         case EpubContentType.CSS:
           var epubTextContentFile = EpubTextContentFileRef(
             epubArchive,

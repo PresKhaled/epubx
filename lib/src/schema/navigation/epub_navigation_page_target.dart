@@ -11,7 +11,7 @@ class EpubNavigationPageTarget {
   EpubNavigationPageTargetType? Type;
   String? Class;
   String? PlayOrder;
-  List<EpubNavigationLabel>? NavigationLabels;
+  List<EpubNavigationLabel> NavigationLabels = [];
   EpubNavigationContent? Content;
 
   @override
@@ -23,7 +23,7 @@ class EpubNavigationPageTarget {
       Class.hashCode,
       PlayOrder.hashCode,
       Content.hashCode,
-      ...NavigationLabels?.map((label) => label.hashCode) ?? [0]
+      ...NavigationLabels.map((label) => label.hashCode)
     ];
     return hashObjects(objects);
   }

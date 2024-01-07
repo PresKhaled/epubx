@@ -72,7 +72,7 @@ class EpubBookRef {
     extractArchiveToDisk(epubArchive, path);
   }
 
-  List<EpubChapterRef> get getChapters => ChapterReader.getChapters(this);
+  List<EpubChapterRef> get chapters => ChapterReader.getChapters(this);
 
-  EpubByteContentFileRef? get readCover => BookCoverReader.readBookCover(this);
+  EpubByteContentFileRef? get cover => BookCoverReader.readBookCover(this);
 }

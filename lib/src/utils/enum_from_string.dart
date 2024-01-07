@@ -7,7 +7,6 @@ class EnumFromString<T> {
     value = '$T.$value';
     try {
       var x = enumValues.firstWhere((f) => f.toString().toUpperCase() == value.toUpperCase());
-      print(x);
       return x;
     } catch (e) {
       return null;

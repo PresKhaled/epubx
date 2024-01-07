@@ -78,18 +78,16 @@ class EpubReader {
     final List<int> loadedBytes = (bytes is Future) ? await bytes : bytes;
 
     var epubBookRef = await openBook(loadedBytes);
-    var result = EpubBook(
+
+    return EpubBook(
       Schema: epubBookRef.Schema,
       MainTitle: epubBookRef.Title,
       Content: readContent(epubBookRef.Content),
+      AuthorList: epubBookRef.AuthorList,
+      Author: epubBookRef.Author,
+      CoverImage: epubBookRef.cover,
+      Chapters: readChapters(epubBookRef.chapters),
     );
-    result.AuthorList = epubBookRef.AuthorList;
-    result.Author = epubBookRef.Author;
-    result.CoverImage = epubBookRef.readCover;
-    var chapterRefs = epubBookRef.getChapters;
-    result.Chapters = readChapters(chapterRefs);
-
-    return result;
   }
 
   static EpubContent readContent(EpubContentRef contentRef) {
@@ -103,6 +101,7 @@ class EpubReader {
 
     for (final key in contentRef.AllFiles.keys) {
       if (!result.AllFiles.containsKey(key)) {
+        print('why');
         result.AllFiles[key] = readByteContentFile(contentRef.AllFiles[key]!);
       }
     }

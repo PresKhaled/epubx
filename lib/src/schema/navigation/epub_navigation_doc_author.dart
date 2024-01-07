@@ -2,15 +2,11 @@ import 'package:quiver/collection.dart' as collections;
 import 'package:quiver/core.dart';
 
 class EpubNavigationDocAuthor {
-  List<String>? Authors;
-
-  EpubNavigationDocAuthor() {
-    Authors = <String>[];
-  }
+  List<String> Authors = [];
 
   @override
   int get hashCode {
-    var objects = [...Authors!.map((author) => author.hashCode)];
+    var objects = [...Authors.map((author) => author.hashCode)];
     return hashObjects(objects);
   }
 

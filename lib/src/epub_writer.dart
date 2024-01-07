@@ -1,6 +1,5 @@
 import 'package:archive/archive.dart';
 import 'dart:convert' as convert;
-import 'package:epubx/src/utils/zip_path_utils.dart';
 import 'package:epubx/src/writers/epub_package_writer.dart';
 
 import 'entities/epub_book.dart';
@@ -37,7 +36,7 @@ class EpubWriter {
         content = convert.utf8.encode(file.Content!);
       }
 
-      arch.addFile(ArchiveFile(ZipPathUtils.combine(book.Schema.ContentDirectoryPath, name), content!.length, content));
+      arch.addFile(ArchiveFile('${book.Schema.ContentDirectoryPath}$name', content!.length, content));
     });
 
     // Generate the content.opf file and add it to the Archive
@@ -45,7 +44,7 @@ class EpubWriter {
 
     arch.addFile(
       ArchiveFile(
-        ZipPathUtils.combine(book.Schema.ContentDirectoryPath, 'content.opf'),
+        '${book.Schema.ContentDirectoryPath}content.opf',
         contentopf.length,
         convert.utf8.encode(contentopf),
       ),

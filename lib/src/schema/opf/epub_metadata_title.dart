@@ -20,6 +20,12 @@ class EpubMetadataTitle {
 
     if (otherAs == null) return false;
 
-    return ((Id == otherAs.Id) && (Title == otherAs.Title) && (LanguageRelatedAttributes == otherAs.LanguageRelatedAttributes));
+    return ((Id == otherAs.Id) &&
+        (Title == otherAs.Title) &&
+        (LanguageRelatedAttributes == otherAs.LanguageRelatedAttributes));
   }
+
+  @override
+  // TODO: implement hashCode
+  int get hashCode => super.hashCode;
 }

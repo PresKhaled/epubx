@@ -14,15 +14,23 @@ import 'epub_schema.dart';
 import 'epub_text_content_file.dart';
 
 class EpubBook {
-  EpubMetadataTitle MainTitle;
+  final EpubMetadataTitle MainTitle;
   String? Author;
-  List<String> AuthorList = [];
+  List<String> AuthorList;
   final EpubSchema Schema;
-  EpubContent Content;
+  final EpubContent Content;
   EpubByteContentFileRef? CoverImage;
-  List<EpubChapter> Chapters = [];
+  List<EpubChapter> Chapters;
 
-  EpubBook({required this.Schema, required this.MainTitle, required this.Content});
+  EpubBook({
+    required this.Schema,
+    required this.MainTitle,
+    required this.Content,
+    required this.AuthorList,
+    this.Author,
+    this.CoverImage,
+    required this.Chapters,
+  });
 
   String get title => MainTitle.Title;
   EpubMetadata get metadata => Schema.Package.Metadata;

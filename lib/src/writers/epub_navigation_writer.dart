@@ -26,10 +26,9 @@ class EpubNavigationWriter {
     return builder.buildDocument().toXmlString(pretty: false);
   }
 
-  static void writeNavigationDocTitle(
-      XmlBuilder builder, EpubNavigationDocTitle title) {
+  static void writeNavigationDocTitle(XmlBuilder builder, EpubNavigationDocTitle title) {
     builder.element('docTitle', nest: () {
-      for (var element in title.Titles!) {
+      for (var element in title.Titles) {
         builder.text(element);
       }
     });
@@ -37,23 +36,21 @@ class EpubNavigationWriter {
 
   static void writeNavigationHead(XmlBuilder builder, EpubNavigationHead head) {
     builder.element('head', nest: () {
-      for (var item in head.Metadata!) {
-        builder.element('meta',
-            attributes: {'content': item.Content!, 'name': item.Name!});
+      for (var item in head.Metadata) {
+        builder.element('meta', attributes: {'content': item.Content!, 'name': item.Name!});
       }
     });
   }
 
   static void writeNavigationMap(XmlBuilder builder, EpubNavigationMap map) {
     builder.element('navMap', nest: () {
-      for (var item in map.Points!) {
+      for (var item in map.Points) {
         writeNavigationPoint(builder, item);
       }
     });
   }
 
-  static void writeNavigationPoint(
-      XmlBuilder builder, EpubNavigationPoint point) {
+  static void writeNavigationPoint(XmlBuilder builder, EpubNavigationPoint point) {
     builder.element('navPoint', attributes: {
       'id': point.Id!,
       'playOrder': point.PlayOrder!,
