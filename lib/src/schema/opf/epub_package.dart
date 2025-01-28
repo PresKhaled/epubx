@@ -9,11 +9,20 @@ import 'epub_version.dart';
 
 class EpubPackage {
   EpubVersion? Version;
-  EpubLanguageRelatedAttributes? LanguageRelatedAttributes;
-  EpubMetadata? Metadata;
-  EpubManifest? Manifest;
-  EpubSpine? Spine;
+  EpubLanguageRelatedAttributes LanguageRelatedAttributes;
+  EpubMetadata Metadata;
+  EpubManifest Manifest;
+  EpubSpine Spine;
   EpubGuide? Guide;
+
+  EpubPackage({
+    required this.Version,
+    required this.Metadata,
+    required this.Manifest,
+    required this.Spine,
+    required this.LanguageRelatedAttributes,
+    this.Guide,
+  });
 
   @override
   int get hashCode =>

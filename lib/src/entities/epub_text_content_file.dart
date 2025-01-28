@@ -10,7 +10,7 @@ class EpubTextContentFile extends EpubContentFile {
 
   @override
   bool operator ==(other) {
-    if (!(other is EpubTextContentFile)) {
+    if (other is! EpubTextContentFile) {
       return false;
     }
 

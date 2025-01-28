@@ -1,8 +1,10 @@
 import 'package:quiver/core.dart';
 
 class EpubSpineItemRef {
-  String? IdRef;
-  bool? IsLinear;
+  String IdRef;
+  bool IsLinear;
+
+  EpubSpineItemRef({required this.IdRef, required this.IsLinear});
 
   @override
   int get hashCode => hash2(IdRef.hashCode, IsLinear.hashCode);

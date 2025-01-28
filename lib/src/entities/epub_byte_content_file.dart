@@ -1,10 +1,14 @@
+import 'dart:typed_data';
+
 import 'package:quiver/collection.dart' as collections;
 import 'package:quiver/core.dart';
 
 import 'epub_content_file.dart';
 
 class EpubByteContentFile extends EpubContentFile {
-  List<int>? Content;
+  Uint8List? Content;
+
+  EpubByteContentFile({super.FileName, super.ContentMimeType, super.ContentType, this.Content});
 
   @override
   int get hashCode {
@@ -19,7 +23,7 @@ class EpubByteContentFile extends EpubContentFile {
 
   @override
   bool operator ==(other) {
-    if (!(other is EpubByteContentFile)) {
+    if (other is! EpubByteContentFile) {
       return false;
     }
     return collections.listsEqual(Content, other.Content) &&
