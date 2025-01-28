@@ -43,9 +43,6 @@ abstract class EpubContentFileRef {
   }
 
   Uint8List openContentStream(ArchiveFile contentFileEntry) {
-    if (contentFileEntry.content == null) {
-      throw Exception('Incorrect EPUB file: content file "$FileName" specified in manifest is not found.');
-    }
     return Uint8List.fromList(contentFileEntry.content);
   }
 
